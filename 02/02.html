@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8" />
+<title>Задание №2</title>
+
+<body>
+
+<canvas id='lab02' height='1066' width='1600' style='border:0px solid'></canvas>
+
+<canvas id='lab02_2' height='1066' width='1600' style='border:0px solid'></canvas>
+<!--<a href='#' class='batton' id='btn01'>Save</a>-->
+<script>
+    let canvas1 = document.getElementById('lab02');
+    let ctx = canvas1.getContext('2d');
+
+    let canvas2 = document.getElementById('lab02_2');
+    let ctx2 = canvas2.getContext('2d');
+
+    let img = new Image();
+    img.src = 'test.jpg';
+    img.onload = function () {
+        ctx.drawImage(img, 0, 0);
+        let tmp_data = ctx.getImageData(0, 0, canvas1.width, canvas1.height);
+        let img_data2 = ctx2.getImageData(0, 0, canvas1.width, canvas1.height);
+        for (let i = 0; i < canvas1.height; i++) {
+            for (let j = 0; j < canvas1.width; ++j) {
+		let av = 0;
+                for (let k = 0; k < 3; ++k) {
+                    av += tmp_data.data[4 * (i * canvas1.width + j) + k];
+                }
+		av = av/3;
+		for (let k = 0; k < 3; ++k) {
+                    img_data2.data[4 * (i * canvas1.width + j) + k] = av;
+                }
+		img_data2.data[4 * (i * canvas1.width + j) + 3] = 
+			tmp_data.data[4 * (i * canvas1.width + j) + 3];
+            }
+        }
+        ctx2.putImageData(img_data2, 0, 0);
+    }
+</script>
+
+</body>
+</html>

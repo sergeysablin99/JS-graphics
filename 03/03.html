@@ -1,0 +1,64 @@
+  
+<!DOCTYPE html>
+<html>
+
+<title>Задание №3</title>
+
+<body>
+
+<canvas id='lab03' height='500' width='500' style='border:1px solid'></canvas>
+
+<script>
+    let canvas = document.getElementById('lab03');
+    let ctx = canvas.getContext('2d');
+
+    let x0;
+    let y0;
+    let x1;
+    let y1;
+
+    function Line(ctx, x0, y0, x1, y1) {
+        let deltax = Math.abs(x1-x0);
+		let deltay = Math.abs(y1-y0);
+		let error = 0;
+		let deltaerr = (deltay + 1)/(deltax + 1);
+		let y = y0;
+		let diry = y1 - y0;
+		
+		let scale = 4;
+		
+		if (diry > 0)
+			diry = deltaerr;
+		else if (diry < 0)
+			diry = -deltaerr;
+		
+		for (let x = x0; x <= x1; x++) {
+			ctx.fillRect(x, y, scale, scale);
+			error += deltaerr;
+			if (error >= 1) {
+				y += diry;
+				error -= 1;
+			}
+		}
+    }
+
+    let point_index = 0;
+    canvas.addEventListener("click", function (e) {
+        if (point_index === 0) {
+            x0 = e.offsetX;
+            y0 = e.offsetY;
+            point_index = 1;
+        } else {
+            x1 = e.offsetX;
+            y1 = e.offsetY;
+            if (x1 < x0) {
+                [x0, x1] = [x1, x0];
+                [y0, y1] = [y1, y0];
+            }
+            Line(ctx, x0, y0, x1, y1);
+            point_index = 0;
+        }
+    });
+</script>
+</body>
+</html>
