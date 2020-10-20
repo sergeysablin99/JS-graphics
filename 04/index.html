@@ -1,0 +1,60 @@
+  
+<!DOCTYPE html>
+<html lang="en">
+
+<title>ЛР 4</title>
+
+<body>
+<p>Paleontological Richmond</p>
+<canvas id='lab04' height='667' width='1000' style='border:1px solid'></canvas>
+
+<p><a href='#' class='button' id='btn'>Res</a></p>
+<canvas id='lab04_2' height='667' width='1000' style='border:1px solid'></canvas>
+
+<script>
+    let c1 = document.getElementById('lab04');
+    let ctx = c1.getContext('2d');
+
+    let c2 = document.getElementById('lab04_2');
+    let ctx2 = c2.getContext('2d');
+    let img = new Image();
+    img.src = 'main.jpg';
+
+    img.onload = function () {
+        ctx.drawImage(img, 0, 0);
+        let img_data = ctx.getImageData(0, 0, c1.width, c1.height);
+        console.log(img_data);
+        let img_data2 = ctx2.getImageData(0, 0, c1.width, c1.height);
+
+        for (let i = 0; i < c1.height; ++i) {
+            for (let j = 0; j < c1.width; ++j) {
+                for (let k = 0; k < 3; ++k)
+                {
+                    let p = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+                    p[0] = img_data.data[4 * ((i - 1) * c1.width + j - 1) + k];
+                    p[1] = img_data.data[4 * ((i - 1) * c1.width + j) + k];
+                    p[2] = img_data.data[4 * ((i - 1) * c1.width + j + 1) + k];
+                    p[3] = img_data.data[4 * ((i) * c1.width + j - 1) + k];
+                    p[4] = img_data.data[4 * ((i) * c1.width + j) + k];
+                    p[5] = img_data.data[4 * ((i) * c1.width + j + 1) + k];
+                    p[6] = img_data.data[4 * ((i + 1) * c1.width + j - 1) + k];
+                    p[7] = img_data.data[4 * ((i + 1) * c1.width + j) + k];
+                    p[8] = img_data.data[4 * ((i + 1) * c1.width + j + 1) + k];
+                    img_data2.data[4 * (i * c1.width + j) + k] =
+                     (p[0] + p[2] + p[6] + p[8] + 2 * (p[1] + p[3] + p[5] + p[7]) + 4 * p[4]) / 16; // S;
+                }
+                img_data2.data[4 * (i * c1.width + j) + 3] = 255;
+            }
+        }
+        ctx2.putImageData(img_data2, 0, 0);
+
+    let btn = document.getElementById('btn');
+    btn.addEventListener('click', function (e) {
+        btn.href = c2.toDataURL('image/png');
+        btn.download = 'Bell.png';
+    });
+  }
+</script>
+
+</body>
+</html>
